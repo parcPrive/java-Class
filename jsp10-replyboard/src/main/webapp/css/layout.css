@@ -1,0 +1,18 @@
+@charset "UTF-8";
+.main{
+	min-height: 500px;
+}
+
+.step:before{
+	content:"/F132";
+	display:inline-block;
+	font-family: "bootstrap-icons";
+	
+}
+.step2{
+	padding-left: 30px;	
+}
+
+.step3{
+	padding-left: 60px;
+}
