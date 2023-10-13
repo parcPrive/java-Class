@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- <![CDATA[특수문자]]> -->
+<mapper namespace="com.mok.mybatis">
+	<select id="LoginMember" resultType="MemberDto" parameterType="MemberDto">
+		select * from member where id=#{id} and password = #{password}
+	</select>
+	
+	<select id="CheckedID" resultType="MemberDto" parameterType="String">
+		select * from member where id = #{id} 
+	</select>
+	
+	<insert id="insertMember" parameterType="MemberDto">
+		insert into member values(seq_member.nextval,
+								  #{id},
+								  #{password},
+								  #{name}, 
+								  #{email},
+								  #{tel},
+								  #{postCode},
+								  #{address},
+								  #{detailAddress},
+								  sysdate,
+								  #{profile})
+	</insert>
+</mapper> 

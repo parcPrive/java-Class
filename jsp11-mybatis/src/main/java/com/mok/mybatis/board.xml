@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- <![CDATA[특수문자]]> -->
+<mapper namespace="com.mok.mybatis">
+	<select id="getAllReplyboard" resultType="com.mok.dto.BoardDto">
+		select * from replyboard
+	</select>
+	<select id="getOneBoard" resultType="com.mok.dto.BoardDto"
+		parameterType="int">
+		select * from replyboard where no=#{no}
+	</select>
+
+	<select id="getPageBoard" resultType="com.mok.dto.BoardDto"
+		parameterType="com.mok.dto.PageDto">
+<!-- 		SELECT * from(
+		SELECT rownum AS num, b.* from
+		(SELECT * FROM replyboard ORDER BY regroup DESC, relevel ASc) b)
+		WHERE num <![CDATA[>=]]> #{start}
+		AND num <![CDATA[<=]]> #{end} -->
+		
+		<![CDATA[
+		SELECT * from(
+		SELECT rownum AS num, b.* from
+		(SELECT * FROM replyboard ORDER BY regroup DESC, relevel ASc) b)
+		WHERE num >= #{start}
+		AND num <= #{end}
+		]]>
+	</select>
+	
+	<insert id="insertBoard" parameterType="com.mok.dto.BoardDto">
+		insert INTO replyboard values(seq_replyboard.nextval, #{userID}, #{name}, #{title},#{content}, sysdate, 0, #{regroup}, #{relevel}, #{restep}, 1)
+	</insert>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete from replyboard where no = #{no}
+	</delete>
+	<update id="updateHit" parameterType="int">
+		update replyboard set hit = hit + 1 where no = #{no}
+	</update>
+	
+	<delete id="deleteAllBoard" parameterType="Map"> <!--  느낌이 배열처럼 들어오면 map으로 쓰면 거진 다될꺼같은 느낌이든다. 그리고 왜 map은 앞에 m을 대문자로 안바꿔도 되는걸까???  해보니 대문자건 소문자건 상관이 없었다??-->
+		delete from replyboard where no in <foreach collection="list" item="item" index="i" open="(" close=")" separator=",">#{item}</foreach> <!--  foreach안에 collection에는 소문자로 쓰 -->
+	</delete>
+	
+	<select id="searchSelect" resultType="com.mok.dto.BoardDto" parameterType="HashMap">
+		SELECT * FROM replyboard WHERE  
+		<choose>
+			<when test="category=='name'">
+				name LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test="category=='title'">
+				title LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test="category=='all'">
+				(name    LIKE '%'||#{keyword}||'%') or
+				(title   LIKE '%'||#{keyword}||'%')
+				
+			</when>
+		</choose> 
+	</select>
+</mapper> 
